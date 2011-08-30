@@ -24,19 +24,78 @@
 
 /**
  * Enter descriptions here
- *
+ * @author Thomas Maroschik<tmaroschik@dfau.de>
  */
-class t3lib_webservice_Router {
+class t3lib_webservice_Router implements t3lib_Singleton {
+
+	protected $routes = array();
 
 	/**
 	 * Walks through all configured routes and calls their respective resolves-method.
 	 * When a matching route is found, the corresponding URI is returned.
 	 *
+	 * @param string $requestString
 	 * @param array $routes
-	 * @return string URI
+	 * @return array $resolvedRoute
+	 * @throws InvalidArgumentException
 	 */
-	public function resolve(array $routes) {
+	public function resolve($requestString) {
+		foreach ($this->getRoutes() as $uriPattern => $webserviceClassName) {
+			$matchReturn = preg_match_all($uriPattern, $requestString, $matches);
+			if ($matchReturn === FALSE) {
+				throw new InvalidArgumentException('The route pattern "' . $uriPattern . '" returns the error code: ' . preg_last_error(), 1314720278);
+			} elseif ($matchReturn > 0) {
+				$resolvedRoute = array(
+					'webserviceClassName'	=> $webserviceClassName,
+					'resolvedArguments'	=> array(),
+				);
+				foreach (array_keys($matches) as $matchKey) {
+					if (!is_numeric($matchKey) && isset($matches[$matchKey][0])) {
+						$resolvedRoute['resolvedArguments'][$matchKey] = $matches[$matchKey][0];
+					}
+				}
+				return $resolvedRoute;
+			}
+		}
+	}
 
+	/**
+	 * Sets routes
+	 *
+	 * @param array $routes
+	 */
+	public function setRoutes(array $routes) {
+		$this->routes = $routes;
+		return $this;
+	}
+
+	/**
+	 * Adds a route
+	 *
+	 * @param array $route
+	 */
+	public function addRoute($uriPattern, $webserviceClassName) {
+		$this->routes[$uriPattern] = $webserviceClassName;
+		return $this;
+	}
+
+	/**
+	 * Removes a route
+	 *
+	 * @param string $uriPattern
+	 */
+	public function removeRoute($uriPattern) {
+		unset($this->routes[$uriPattern]);
+		return $this;
+	}
+
+	/**
+	 * Returns routes
+	 *
+	 * @return array An array routes
+	 */
+	public function getRoutes() {
+		return $this->routes;
 	}
 
 }

@@ -34,37 +34,87 @@ class t3lib_webservice_Dispatcher {
 	 */
 	protected $router;
 
+	/**
+	 *
+	 */
 	public function __construct() {
 		$this->router = t3lib_div::makeInstance('t3lib_webservice_Router');
 	}
 
-	protected function resolveRoute() {
-		global $TYPO3_CONF;
-		$routes = $TYPO3_CONF['SVCONF']['webservicesDispatcher']['routes'];
-		if (isset($routes) && !empty($routes)) {
-			return $this->router->resolve($routes);
-		}
-	}
-
-	public function dispatch() {
-		$resolvedRoute = $this->resolveRoute();
-		if ($resolvedRoute !== null && isset($resolvedRoute['webserviceClass'])) {
+	/**
+	 * @param string $requestString
+	 * @throws In validArgumentException
+	 * @return void
+	 */
+	public function dispatch($requestString) {
+		$resolvedRoute = $this->router->resolve($requestString);
+		if ($resolvedRoute !== NULL && isset($resolvedRoute['webserviceClassName'])) {
 			$request = $this->buildRequest($resolvedRoute['resolvedArguments']);
 			$response = $this->buildResponse();
 			/** @var t3lib_webservice_WebserviceInterface $webservice */
-			$webservice = t3lib_div::makeInstance($resolvedRoute['webserviceClass']);
+			$webservice = t3lib_div::makeInstance($resolvedRoute['webserviceClassName']);
 			if (!$webservice instanceof t3lib_webservice_WebserviceInterface) {
 				throw new InvalidArgumentException('The webservice "' . get_class($webservice) . '" does not implement the t3lib_webservice_WebserviceInterface.', 1310305459);
 			}
 			$webservice->setRequest($request);
 			$webservice->setResponse($response);
 			$webservice->run();
-			$response->send();
+			$this->output($response);
 		}
 	}
 
-	protected function output() {
 
+	/**
+	 * @param array $arguments
+	 * @return t3lib_webservices_request
+	 */
+	protected function buildRequest(array $arguments) {
+		/** @var t3lib_webservices_request $request */
+		$request = t3lib_div::makeInstance('t3lib_webservices_Request');
+		return $request;
+	}
+
+	/**
+	 * @return t3lib_webservices_response
+	 */
+	protected function buildResponse() {
+		/** @var t3lib_webservices_response $response */
+		$response = t3lib_div::makeInstance('t3lib_webservices_Response');
+		return $response;
+	}
+
+	/**
+	 * @param t3lib_webservices_Response $response
+	 * @return void
+	 */
+	protected function output(t3lib_webservices_Response $response) {
+		$response->sendHeaders();
+		$response->send();
+	}
+
+	/**
+	 * @api
+	 * @static
+	 * @param string $uriPattern
+	 * @param string $webserviceClassName
+	 * @return void
+	 */
+	static public function addRoute($uriPattern, $webserviceClassName) {
+		/** @var t3lib_webservice_Router $router */
+		$router = t3lib_div::makeInstance('t3lib_webservice_Router');
+		$router->addRoute($uriPattern, $webserviceClassName);
+	}
+
+	/**
+	 * @api
+	 * @static
+	 * @param  $uriPattern
+	 * @return void
+	 */
+	static public function removeRoute($uriPattern) {
+		/** @var t3lib_webservice_Router $router */
+		$router = t3lib_div::makeInstance('t3lib_webservice_Router');
+		$router->removeRoute($uriPattern);
 	}
 }
 ?>
