@@ -284,7 +284,6 @@ CREATE TABLE sys_file (
 	tstamp int(11) DEFAULT '0' NOT NULL,
 	crdate int(11) DEFAULT '0' NOT NULL,
 	cruser_id int(11) DEFAULT '0' NOT NULL,
-	deleted tinyint(4) DEFAULT '0' NOT NULL,
 	missing tinyint(4) DEFAULT '0' NOT NULL,
 
 	# Versioning fields
@@ -317,7 +316,7 @@ CREATE TABLE sys_file (
 	alternative text,
 
 	PRIMARY KEY (uid),
-	KEY parent (pid,deleted),
+	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
 	KEY sel01 (storage,identifier(20)),
 	KEY sha1 (sha1(40))
@@ -654,6 +653,7 @@ CREATE TABLE sys_category_record_mm (
 	uid_local int(11) DEFAULT '0' NOT NULL,
 	uid_foreign int(11) DEFAULT '0' NOT NULL,
 	tablenames varchar(255) DEFAULT '' NOT NULL,
+	fieldname varchar(255) DEFAULT '' NOT NULL,
 	sorting int(11) DEFAULT '0' NOT NULL,
 	sorting_foreign int(11) DEFAULT '0' NOT NULL,
 

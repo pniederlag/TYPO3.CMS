@@ -52,6 +52,8 @@ class StepController extends AbstractController {
 		'BE/loginLabels',
 		// #44506
 		'BE/loginNews',
+		// #52013
+		'BE/TSconfigConditions',
 		// #30613
 		'BE/useOnContextMenuHandler',
 		// #48179
@@ -68,8 +70,14 @@ class StepController extends AbstractController {
 		'FE/defaultTypoScript_editorcfg.',
 		// #25099
 		'FE/simulateStaticDocuments',
+		// 52011
+		'GFX/im_combine_filename',
 		// #22687
 		'GFX/gdlib_2',
+		// #52012
+		'GFX/im_mask_temp_ext_noloss',
+		// #52010
+		'GFX/im_no_effects',
 		// #18431
 		'GFX/noIconProc',
 		// #17606

@@ -23,6 +23,12 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 body {
 	line-height: 1;
 }
+body.standalone {
+	overflow-y: scroll;
+}
+body.backend #typo3-docbody {
+	overflow-y: scroll;
+}
 ol, ul {
 	list-style: none;
 }
@@ -252,18 +258,42 @@ button span.t3-install-form-button-icon-negative {
 }
 
 #t3-install-outer {
-	width: 76em;
+	width: 78em;
 	margin: 1em auto;
 }
 
-#t3-install-left {
+#t3-install-head {
+	position: fixed;
+}
+
+#t3-install-logo {
+	width: 21em;
 	float: left;
-	width: 19em;
+	height: 100px;
+}
+
+#t3-install-headline {
+	width: 57em;
+	float: left;
+}
+
+#t3-install-center {
+	position: absolute;
 	clear: both;
 }
 
+.standalone #t3-install-center {
+	top: 100px;
+}
+
+#t3-install-left {
+	width: 21em;
+	position: fixed;
+}
+
 #t3-install-right {
-	padding-left: 19em;
+	padding-left: 21em;
+	margin-bottom: 1em;
 	width: 57em;
 }
 
@@ -271,7 +301,7 @@ button span.t3-install-form-button-icon-negative {
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	width: 16em;
+	width: 18em;
 	font-size: 110%;
 	line-height: 2em;
 }
@@ -282,7 +312,6 @@ button span.t3-install-form-button-icon-negative {
 
 #t3-install-menu li.act {
 	background-color: #585858;
-	line-height: 1.5em;
 }
 
 #t3-install-menu a {
@@ -346,14 +375,13 @@ button span.t3-install-form-button-icon-negative {
 
 #t3-install-menu .t3-install-menu-errorCount {
 	background-color: #dc4c42;
-	color:#ffffff;
+	color: #ffffff;
 	font-weight: normal;
-	margin: 0 0.2em 0 0;
+	margin: 3px 0.4em 0 0;
 	float: right;
-	padding: 0 0.6em 0 0.6em;
-	-webkit-border-radius: 1em;
-	-moz-border-radius: 1em;
-	border-radius: 1em;
+	padding: 0px 5px;
+	border-radius: 6px;
+	line-height: 1.5em;
 }
 
 #t3-install-links {
@@ -400,6 +428,20 @@ button span.t3-install-form-button-icon-negative {
 
 #t3-install-box-body a:hover {
 	color: #111 !important;
+}
+
+#t3-install-box-body .toggleButton {
+    background: url('../../../Images/Icon/arrowright.png') no-repeat;
+    padding-left: 20px;
+    cursor: pointer;
+}
+#t3-install-box-body .expanded .toggleButton {
+    background-image: url('../../../Images/Icon/arrowdown.png');
+}
+
+#t3-install-box-body .fieldNote {
+	font-style: italic;
+	margin-top: 0.5em;
 }
 
 .t3-install-tool-configuration-radio {
@@ -471,7 +513,7 @@ body {
 	background-color: #f2f2f2;
 }
 
-h1,
+#t3-install-head,
 #t3-install-menu-border-top,
 #t3-install-menu-bottom,
 #t3-install-links,
@@ -566,7 +608,7 @@ body.standalone #t3-install-outer {
 	margin: 0 auto;
 }
 
-body.standalone h1,
+body.standalone #t3-install-head,
 body.standalone #t3-install-menu-border-top,
 body.standalone #t3-install-menu-bottom,
 body.standalone #t3-install-links,
@@ -589,15 +631,15 @@ body.standalone #t3-install-form-login .t3-install-form-submit {
 body.standalone h1 {
 	background: url('../../../Images/Background/Logo.gif') no-repeat scroll 0 0 transparent;
 	text-indent:-999em;
-	margin: 2em 0 3.7em 0;
+	margin: 2.5em 0 3.7em 0;
 	height: 34px;
-	width: 19em;
+	width: 21em;
 	float: left;
 }
 
 body.standalone h2 {
-	padding: 3.3em 0 3.7em 17.5em;
-	margin: 0;
+	margin: 3.3em 0 0 1.8em;
+	padding: 0;
 	height: auto;
 	color: #ffffff;
 }

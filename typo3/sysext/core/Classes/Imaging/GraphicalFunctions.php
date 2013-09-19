@@ -41,11 +41,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 class GraphicalFunctions {
 
 	// Internal configuration, set in init()
-	// The ImageMagick filename used for combining two images. This name changed during the versions.
-	/**
-	 * @todo Define visibility
-	 */
-	public $combineScript = 'combine';
 
 	// If set, there is no frame pointer prepended to the filenames.
 	/**
@@ -342,9 +337,6 @@ class GraphicalFunctions {
 		// Setting default JPG parameters:
 		$this->jpegQuality = MathUtility::forceIntegerInRange($gfxConf['jpg_quality'], 10, 100, 75);
 		$this->cmds['jpg'] = ($this->cmds['jpeg'] = '-colorspace ' . $this->colorspace . ' -sharpen 50 -quality ' . $this->jpegQuality);
-		if ($gfxConf['im_combine_filename']) {
-			$this->combineScript = $gfxConf['im_combine_filename'];
-		}
 		if ($gfxConf['im_noFramePrepended']) {
 			$this->noFramePrepended = 1;
 		}
@@ -363,14 +355,14 @@ class GraphicalFunctions {
 			// Just set the flag if the masks works opposite the intension!
 			$this->maskNegate = ' -negate';
 		}
-		if ($gfxConf['im_no_effects']) {
-			// Boolean. This is necessary if using ImageMagick 5+.
-			// Effects in Imagemagick 5+ tends to render very slowly!!
-			// - therefore must be disabled in order not to perform sharpen, blurring and such.
-			$this->NO_IM_EFFECTS = 1;
-			$this->cmds['jpg'] = ($this->cmds['jpeg'] = '-colorspace ' . $this->colorspace . ' -quality ' . $this->jpegQuality);
-		}
-		// ... but if 'im_v5effects' is set, don't care about 'im_no_effects'
+
+		// Boolean. This is necessary if using ImageMagick 5+.
+		// Effects in Imagemagick 5+ tends to render very slowly!!
+		// - therefore must be disabled in order not to perform sharpen, blurring and such.
+		$this->NO_IM_EFFECTS = 1;
+		$this->cmds['jpg'] = ($this->cmds['jpeg'] = '-colorspace ' . $this->colorspace . ' -quality ' . $this->jpegQuality);
+
+		// ... but if 'im_v5effects' is set, enable effects
 		if ($gfxConf['im_v5effects']) {
 			$this->NO_IM_EFFECTS = 0;
 			$this->V5_EFFECTS = 1;
@@ -2292,7 +2284,7 @@ class GraphicalFunctions {
 					}
 					$offsetX = intval(($data[0] - $data['origW']) * ($data['cropH'] + 100) / 200);
 					$offsetY = intval(($data[1] - $data['origH']) * ($data['cropV'] + 100) / 200);
-					$params .= ' -crop ' . $data['origW'] . 'x' . $data['origH'] . '+' . $offsetX . '+' . $offsetY . ' ';
+					$params .= ' -crop ' . $data['origW'] . 'x' . $data['origH'] . '+' . $offsetX . '+' . $offsetY . '! ';
 				}
 				$command = $this->scalecmd . ' ' . $info[0] . 'x' . $info[1] . '! ' . $params . ' ';
 				$cropscale = $data['crs'] ? 'crs-V' . $data['cropV'] . 'H' . $data['cropH'] : '';
